@@ -22,7 +22,7 @@ def main():
     global time2evaluate
     global newTime2evaluate
     samplingTime = 1  # seconds
-    time2evaluate = 7  # every 30 seconds
+    time2evaluate = 10  # every 30 seconds
     newTime2evaluate = 0
 
     global refForce
@@ -35,7 +35,8 @@ def main():
 
     # ttg: [ Setup ]
     global arduino
-    arduino = serial.Serial('COM4', 9600)
+    arduino = serial.Serial('/dev/ttyACM0', 9600)
+    #arduino = serial.Serial('COM4', 9600)
 
     print('Running main function now...')
 
