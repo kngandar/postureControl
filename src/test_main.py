@@ -22,7 +22,7 @@ def main():
     global time2evaluate
     global newTime2evaluate
     samplingTime = 1  # seconds
-    time2evaluate = 10  # every 30 seconds
+    time2evaluate = 9  # every 30 seconds
     newTime2evaluate = 0
 
     global refForce
