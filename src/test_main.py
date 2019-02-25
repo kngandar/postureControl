@@ -51,6 +51,7 @@ def main():
             print('Wait is: ' +  str(wait.isAlive()))
             wait = threading.Thread(name='userInput', target=waitUserInput)
             wait.start()
+        time.sleep(1)    
 
 
 def waitUserInput():
@@ -98,7 +99,7 @@ def readSensorData():
 
             # TODO: String manipulation - Parse data for an ARRAY
             data = arduino.readline().decode().strip('\r\n')
-            #print('Data: ' + data)
+            print('Data: ' + data)
 
 
             # ttg: Evaluate by taking average last 5 points in each eval period

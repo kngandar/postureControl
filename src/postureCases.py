@@ -1,4 +1,4 @@
-import RPI.GPIO as GPIO
+import RPi.GPIO as GPIO
 import time
 
 # Set numbering convention by pin number on the board itself
@@ -6,10 +6,10 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
 
 # Set GPIO as output
-GPIO.setup(29,GPIO.out)     # Left
-GPIO.setup(31,GPIO.out)     # Right
-GPIO.setup(33,GPIO.out)     # Back
-GPIO.setup(35,GPIO.out)     # Lumbar
+GPIO.setup(29,GPIO.OUT)     # Left
+GPIO.setup(31,GPIO.OUT)     # Right
+GPIO.setup(33,GPIO.OUT)     # Back
+GPIO.setup(35,GPIO.OUT)     # Lumbar
 
 vibrateTime = 2
 
@@ -35,9 +35,9 @@ def leanForward(FR, FL, BR, BL):
 def leanBackward(FR, FL, BR, BL):
     if FR < 0 and FL < 0 and BR > 0 and BL > 0:
         # Back on
-        GPIO.output(33, GPIO.HIGH)
+        GPIO.output(33,GPIO.HIGH)
         time.sleep(vibrateTime)
-        GPIO.output(33, GPIO.LOW)
+        GPIO.output(33,GPIO.LOW)
         return True
     else:
         return False
