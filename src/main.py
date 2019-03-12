@@ -301,11 +301,11 @@ def evaluatePosture(seat_averageForce, back_averageForce):
     logdata.append(' seat_tolForce is set to: ' + str(seat_tolForce))
     logdata.append(' back_tolForce is set to: ' + str(back_tolForce))
 
-    if correctUpright(FR, FL, BR, BL, UL, UR, LL, LR): evalResult = 'Correct upright'
-    elif leanForward(FR, FL, BR, BL, UL, UR, LL, LR): evalResult = 'Lean forwards'
-    elif leanBackward(FR, FL, BR, BL, UL, UR, LL, LR): evalResult = 'Lean backwards'
-    elif leanLeft(FR, FL, BR, BL, UL, UR, LL, LR): evalResult = 'Lean left'
-    elif leanRight(FR, FL, BR, BL, UL, UR, LL, LR): evalResult = 'Lean right'
+    if correctUpright(FR, FL, BR, BL, UL, UR, LL, LR): evalResult = 'Correct posture'
+    elif leanForward(FR, FL, BR, BL, UL, UR, LL, LR): evalResult = 'Leaning forwards'
+    elif leanBackward(FR, FL, BR, BL, UL, UR, LL, LR): evalResult = 'Leaning backwards'
+    elif leanLeft(FR, FL, BR, BL, UL, UR, LL, LR): evalResult = 'Leaning left'
+    elif leanRight(FR, FL, BR, BL, UL, UR, LL, LR): evalResult = 'Leaning right'
     elif sitForwards(FR, FL, BR, BL, UL, UR, LL, LR): evalResult = 'Sitting Forward'
     else: evalResult = 'Posture not characterized'
 
