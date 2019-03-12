@@ -33,7 +33,7 @@ def main():
     global seat_tolPercent
     seat_refForce = [0.0, 0.0, 0.0, 0.0]
     seat_tolForce = [2, 2, 2, 2]            # dummy values
-    seat_tolPercent = [0.10, 0.07, 0.15, 0.15]
+    seat_tolPercent = [0.10, 0.05, 0.15, 0.15] # 0.07 for FL previously
 
     global back_refForce
     global back_tolForce
@@ -253,7 +253,7 @@ def evaluatePosture(seat_averageForce, back_averageForce):
     # Convert sensors to relative values
     seat_relative = [seat_averageForce[i] - seat_refForce[i] for i in range(len(seat_refForce))]
     back_relative = [back_averageForce[i] - back_refForce[i] for i in range(len(back_refForce))]
-    #print('Seat relative force: ' + str(seat_relative))
+    print('Seat relative force: ' + str(seat_relative))
 
     # Check each sensor to corresponding tolerance values
     for i in range(0, 4):

@@ -28,7 +28,7 @@ def main():
     global seat_tolPercent
     seat_refForce = [0.0, 0.0, 0.0, 0.0]
     seat_tolForce = [2, 2, 2, 2]            # dummy values
-    seat_tolPercent = [0.10, 0.07, 0.15, 0.15]
+    seat_tolPercent = [0.10, 0.05, 0.15, 0.15]
 
     global back_refForce
     global back_tolForce
@@ -328,6 +328,8 @@ def handleUserInput():
         # ttg: Do shutdown sequence
 
         # > Shutting down...
+        print(str([2, 2, 2, 2, 2, 2, 2, 2]))
+
         programRunning = False
         time.sleep(2)   # waits 2 seconds, before shutting down RPi
         sys.exit()      # exits off program, for now,,,
@@ -339,6 +341,8 @@ def handleUserInput():
 
     elif option is '4':
         # ttg: Snooze program
+        print(str([2, 2, 2, 2, 2, 2, 2, 2]))
+
         snooze = True
         value = int(cmd[1:])
 
