@@ -161,8 +161,8 @@ def readSensorData():
                     back_tolForce[i] = back_tolPercent[i] * back_refForce[i]
 
                 # Forces the headrest tolerance to be a fixed value
-                back_tolForce[0] = 0.5
-                back_tolForce[1] = 0.5
+                back_tolForce[0] = 0.4
+                back_tolForce[1] = 0.4
 
                 print('seat_tolForce is set to: ' + str(seat_tolForce))
                 print('back_tolForce is set to: ' + str(back_tolForce))

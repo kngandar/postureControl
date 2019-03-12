@@ -22,7 +22,7 @@ def correctUpright(FR, FL, BR, BL, UL, UR, LL, LR):
         return False
 
 def leanForward(FR, FL, BR, BL, UL, UR, LL, LR):
-    if FR >= 0 and FL >= 0 and BR <= 0 and BL <= 0 and \
+    if FR >= 0 and FL >= 0 and BR >= 0 and BL >= 0 and \
             (UL < 0 or UR < 0) and LL >= 0 and LR >= 0:
         # Lumbar on
         GPIO.output(35, GPIO.HIGH)
