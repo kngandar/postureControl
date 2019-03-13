@@ -20,7 +20,7 @@ def main():
     global time2evaluate
     global newTime2evaluate
     samplingTime = 1    # seconds
-    time2evaluate = 15
+    time2evaluate = 10
     newTime2evaluate = 0
 
     global seat_refForce
@@ -328,7 +328,7 @@ def handleUserInput():
         # ttg: Do shutdown sequence
 
         # > Shutting down...
-        print(str([2, 2, 2, 2, 2, 2, 2, 2]))
+        print('Data ' + str([2, 2, 2, 2, 2, 2, 2, 2]) + ' Shutting down')
 
         programRunning = False
         time.sleep(2)   # waits 2 seconds, before shutting down RPi
@@ -341,7 +341,7 @@ def handleUserInput():
 
     elif option is '4':
         # ttg: Snooze program
-        print(str([2, 2, 2, 2, 2, 2, 2, 2]))
+        print('Data ' + str([2, 2, 2, 2, 2, 2, 2, 2]) + ' Snoozing')
 
         snooze = True
         value = int(cmd[1:])
