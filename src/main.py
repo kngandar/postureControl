@@ -280,9 +280,6 @@ def evaluatePosture(seat_averageForce, back_averageForce):
 
     logdata.append(' Good sensors: ' + str(goodSensors))
 
-    # Send to web app sensor results
-    print(str(goodSensors))
-
     # TODO: Utilise postureCases functions - see code from test_postureCases.py
     # ttg: Only sends numbers above or below 0 to indicate out of bound values
     FR = seat_relative[0] if goodSensors[0] == 0 else 0
@@ -308,6 +305,9 @@ def evaluatePosture(seat_averageForce, back_averageForce):
     elif leanRight(FR, FL, BR, BL, UL, UR, LL, LR): evalResult = 'Leaning right'
     elif sitForwards(FR, FL, BR, BL, UL, UR, LL, LR): evalResult = 'Sitting Forward'
     else: evalResult = 'Posture not characterized'
+
+    # Send to web app sensor results
+    print('Data ' + str(goodSensors) + ' ' + evalResult)
 
     logdata.append(' Current posture: ' + evalResult)
 
