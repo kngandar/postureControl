@@ -33,7 +33,7 @@ def main():
     global seat_tolPercent
     seat_refForce = [0.0, 0.0, 0.0, 0.0]
     seat_tolForce = [2, 2, 2, 2]            # dummy values
-    seat_tolPercent = [0.10, 0.07, 0.15, 0.15]
+    seat_tolPercent = [0.10, 0.05, 0.15, 0.15] # 0.07 for FL previously
 
     global back_refForce
     global back_tolForce
@@ -71,7 +71,7 @@ def main():
             print('Wait is: ' +  str(wait.isAlive()))
             wait = threading.Thread(name='userInput', target=waitUserInput)
             wait.start()
-        time.sleep(1)    
+        time.sleep(1)
 
 
 def waitUserInput():
@@ -149,15 +149,20 @@ def readSensorData():
                 print('seat_refForce is set to: ' + str(seat_refForce))
                 print('back_refForce is set to: ' + str(back_refForce))
 
+                # Record change
+                file.write(' > seat_refForce is set to: ' + str(seat_refForce))
+                file.write(' > back_refForce is set to: ' + str(back_refForce))
+
+
                 # Calculate tolerance forces
                 for i in range(len(seat_refForce)):
                     seat_tolForce[i] = seat_tolPercent[i] * seat_refForce[i]
                 for i in range(len(back_refForce)):
                     back_tolForce[i] = back_tolPercent[i] * back_refForce[i]
 
-                # TODO: FIX THIS LATER
-                back_tolForce[0] = 0.5
-                back_tolForce[1] = 0.5
+                # Forces the headrest tolerance to be a fixed value
+                back_tolForce[0] = 0.4
+                back_tolForce[1] = 0.4
 
                 print('seat_tolForce is set to: ' + str(seat_tolForce))
                 print('back_tolForce is set to: ' + str(back_tolForce))
@@ -207,12 +212,13 @@ def readSensorData():
             # 1 text file per day for now
             if evalResult is not '':
                 #print('Writing to text file: ' + str(data) + ' ' + evalResult + '\n')
-                file.write(str(data) + ' ' + evalResult + '\n')
+                file.write(str(data) + '\n')
+                for i in range(len(evalResult)):
+                    file.write(evalResult[i] + '\n')
                 evalResult = ''
             else:
                 #print('Writing to text file: ' + str(data))
                 file.write(str(data) + '\n')
-
 
             prev_sensorVal = sensorVal
             time.sleep(samplingTime)
@@ -227,52 +233,9 @@ def readSensorData():
             seat_averageForce = [0.0, 0.0, 0.0, 0.0]
             back_averageForce = [0.0, 0.0, 0.0, 0.0]
 
+    file.close()
     logging.debug('Exiting')
 
-'''
-def recalibrate():
-    # ttg: Read reference force from current seating position
-    global seat_refForce
-    global seat_tolForce
-    global seat_tolPercent
-
-    global back_refForce
-    global back_tolForce
-    global back_tolPercent
-
-    print('>>> Reading reference forces...')
-    sensorVal = arduino.readline().decode().strip('\r\n')
-    sensorVal = sensorVal.split(', ')
-    print('sensorVal: ' + str(sensorVal))
-
-    # Set reference forces
-    seat_refForce = [float(sensorVal[i]) for i in range(0,4)]
-    back_refForce = [float(sensorVal[i]) for i in range(4,8)]
-    print('seat_refForce is set to: ' + str(seat_refForce))
-    print('back_refForce is set to: ' + str(back_refForce))
-
-    # Calculate tolerance forces
-    for i in range(len(seat_refForce)):
-        seat_tolForce[i] = seat_tolPercent[i] * seat_refForce[i]
-    for i in range(len(back_refForce)):
-        back_refForce[i] = back_tolPercent[i] * back_tolForce[i]
-    print('seat_tolForce is set to: ' + str(seat_tolForce))
-    print('back_refForce is set to: ' + str(back_refForce))
-
-'''
-'''
-def setTolerance(tolValue):
-    # ttg: Set the percent tolerance to difference in acceptable and non-acceptable force
-    global seat_tolForce
-    global seat_refForce
-    global seat_tolPercent
-
-    seat_tolPercent = tolValue
-
-    for i in range(len(seat_refForce)):
-        seat_tolForce[i] = seat_tolPercent * seat_refForce[i]
-    print('Set seat_tolForce to: ' + str(seat_tolForce))
-'''
 
 def evaluatePosture(seat_averageForce, back_averageForce):
     # ttg: Evaluate if need to vibrate motors
@@ -285,11 +248,12 @@ def evaluatePosture(seat_averageForce, back_averageForce):
     print('Evaluating Posture...')
 
     goodSensors = [0, 0, 0, 0, 0, 0, 0, 0]
+    logdata = []
 
     # Convert sensors to relative values
     seat_relative = [seat_averageForce[i] - seat_refForce[i] for i in range(len(seat_refForce))]
     back_relative = [back_averageForce[i] - back_refForce[i] for i in range(len(back_refForce))]
-    #print('Seat relative force: ' + str(seat_relative))
+    print('Seat relative force: ' + str(seat_relative))
 
     # Check each sensor to corresponding tolerance values
     for i in range(0, 4):
@@ -301,7 +265,7 @@ def evaluatePosture(seat_averageForce, back_averageForce):
             # Value is good; within range
             goodSensors[i] = 1
 
-    # TODO: FIX THIS LATER
+    # Different check procedure for headrest
     for i in range(0, 2):
         if back_averageForce[i] > back_tolForce[i]:
             # Value is good for headrest; applying enough pressure
@@ -321,7 +285,7 @@ def evaluatePosture(seat_averageForce, back_averageForce):
             # Value is good; within range
             goodSensors[i+4] = 1
 
-    print('Good sensors: ' + str(goodSensors))
+    logdata.append(' Good sensors: ' + str(goodSensors))
 
     # TODO: Utilise postureCases functions - see code from test_postureCases.py
     # ttg: Only sends numbers above or below 0 to indicate out of bound values
@@ -335,37 +299,26 @@ def evaluatePosture(seat_averageForce, back_averageForce):
     LL = back_relative[2] if goodSensors[6] == 0 else 0
     LR = back_relative[3] if goodSensors[7] == 0 else 0
 
-    print('FR: ' + str(FR) + ', FL: ' + str(FL) + ', BR: ' + str(BR) + ', BL: ' + str(BL))
-    print('UL: ' + str(UL) + ', UR: ' + str(UR) + ', LL: ' + str(LL) + ', LR: ' + str(LR))
+    logdata.append(' FR: ' + str(FR) + ', FL: ' + str(FL) + ', BR: ' + str(BR) + ', BL: ' + str(BL))
+    logdata.append( 'UL: ' + str(UL) + ', UR: ' + str(UR) + ', LL: ' + str(LL) + ', LR: ' + str(LR))
 
-    print('seat_tolForce is set to: ' + str(seat_tolForce))
-    print('back_tolForce is set to: ' + str(back_tolForce))
+    logdata.append(' seat_tolForce is set to: ' + str(seat_tolForce))
+    logdata.append(' back_tolForce is set to: ' + str(back_tolForce))
 
     if correctUpright(FR, FL, BR, BL, UL, UR, LL, LR): evalResult = 'Correct upright'
     elif leanForward(FR, FL, BR, BL, UL, UR, LL, LR): evalResult = 'Lean forwards'
     elif leanBackward(FR, FL, BR, BL, UL, UR, LL, LR): evalResult = 'Lean backwards'
     elif leanLeft(FR, FL, BR, BL, UL, UR, LL, LR): evalResult = 'Lean left'
     elif leanRight(FR, FL, BR, BL, UL, UR, LL, LR): evalResult = 'Lean right'
-    #elif slouching(FR, FL, BR, BL, UL, UR, LL, LR): evalResult = 'Slouching'
     elif sitForwards(FR, FL, BR, BL, UL, UR, LL, LR): evalResult = 'Sitting Forward'
     else: evalResult = 'Posture not characterized'
 
-    print('Current posture: ' + evalResult)
+    logdata.append(' Current posture: ' + evalResult)
 
-    '''
-    if abs(seat_averageForce - seat_refForce) > seat_tolForce:
-        # Bad posture
-        evalResult = 'Bad'
+    for i in range(len(logdata)):
+        print(logdata[i])
 
-        print('Vibrating seat motors...')
-        print('Vibrating back motors...')
-
-    else:
-        # Ok posture
-        evalResult = 'Good'
-    '''
-
-    return evalResult
+    return logdata
 
 
 def handleUserInput():
@@ -379,10 +332,6 @@ def handleUserInput():
     print('Command:' + cmd)
 
     option = cmd[0]
-
-    if int(cmd) > 5:
-        # Need to parse cmd
-        print('Need to parse command')
 
     if option is '1':
         # ttg: Do shutdown sequence
@@ -420,18 +369,6 @@ def handleUserInput():
 
         print('Will change eval time on next cycle...')
 
-        '''
-
-    elif option is '3':
-        # ttg: Sets force tolerance
-
-        # TODO: Need to find a different way to indicate which force tolerance we want to update
-        # First number = index, Remaining = value
-        # This will only allow the tolerance value to be set only once
-        idx = int(cmd[1])
-        value = float(cmd[2:])
-        setTolerance(idx, value)
-        '''
 
 if __name__ == '__main__':
     main()
