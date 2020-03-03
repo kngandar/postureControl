@@ -9,3 +9,6 @@ Arduino code to send sensor data is in ***Sensor_DataCollection*** folder
 ***HX711-master.zip*** is the Arduino library for the motor controllers
 
 Remaining files were used during development and testing but are no longer being used
+
+
+You can see our development updates in our blog here: https://poschair.wordpress.com/updates/
